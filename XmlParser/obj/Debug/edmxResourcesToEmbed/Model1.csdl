@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ParsingDemoModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CreationInfo">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CreationDate" Type="DateTime" Precision="0" />
+    <Property Name="User_ID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Tool_ID" Type="Int32" />
+    <NavigationProperty Name="Person" Relationship="Self.FK_CreationInfo_Person" FromRole="CreationInfo" ToRole="Person" />
+    <NavigationProperty Name="Tool" Relationship="Self.FK_CreationInfo_Tool" FromRole="CreationInfo" ToRole="Tool" />
+  </EntityType>
+  <EntityType Name="MetaData">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Schemaversion" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="SchemaType" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="CreationInfo_ID" Type="Int32" />
+    <NavigationProperty Name="CreationInfo" Relationship="Self.FK_MetaData_CreationInfo" FromRole="MetaData" ToRole="CreationInfo" />
+  </EntityType>
+  <EntityType Name="Person">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="system43PersonId" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="name" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+    <Property Name="department" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+    <Property Name="telephone" Type="Int64" />
+    <Property Name="email" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="Tool">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="30" FixedLength="true" Unicode="true" />
+    <Property Name="version" Type="String" MaxLength="20" FixedLength="true" Unicode="true" />
+  </EntityType>
+  <Association Name="FK_CreationInfo_Person">
+    <End Role="Person" Type="Self.Person" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CreationInfo" Type="Self.CreationInfo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CreationInfo">
+        <PropertyRef Name="User_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_CreationInfo_Tool">
+    <End Role="Tool" Type="Self.Tool" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="CreationInfo" Type="Self.CreationInfo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tool">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="CreationInfo">
+        <PropertyRef Name="Tool_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_MetaData_CreationInfo">
+    <End Role="CreationInfo" Type="Self.CreationInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="MetaData" Type="Self.MetaData" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CreationInfo">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="MetaData">
+        <PropertyRef Name="CreationInfo_ID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="ParsingDemoEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CreationInfoes" EntityType="Self.CreationInfo" />
+    <EntitySet Name="MetaDatas" EntityType="Self.MetaData" />
+    <EntitySet Name="People" EntityType="Self.Person" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Tools" EntityType="Self.Tool" />
+    <AssociationSet Name="FK_CreationInfo_Person" Association="Self.FK_CreationInfo_Person">
+      <End Role="Person" EntitySet="People" />
+      <End Role="CreationInfo" EntitySet="CreationInfoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_CreationInfo_Tool" Association="Self.FK_CreationInfo_Tool">
+      <End Role="Tool" EntitySet="Tools" />
+      <End Role="CreationInfo" EntitySet="CreationInfoes" />
+    </AssociationSet>
+    <AssociationSet Name="FK_MetaData_CreationInfo" Association="Self.FK_MetaData_CreationInfo">
+      <End Role="CreationInfo" EntitySet="CreationInfoes" />
+      <End Role="MetaData" EntitySet="MetaDatas" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
